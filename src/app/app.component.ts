@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TodoService } from '@services/todo.service';
+import { TodoService } from '../app/core/services/todo.service';
 import { take } from 'rxjs';
 import { TodoType } from './core/types/todo-type';
 
@@ -12,14 +12,24 @@ export class AppComponent implements OnInit {
   title = 'todo';
   todos: Array<TodoType> = [];
 
-  public constructor(private _todoService: TodoService) {}
+  constructor(private todoService: TodoService) {}
 
   ngOnInit(): void {
-    this._todoService
+    this.todoService
       .findAll()
       .pipe(take(1))
       .subscribe((todos: Array<TodoType>) => {
         this.todos = todos;
       });
+  }
+  addTodo() {
+    const newTodo: TodoType = {
+      id: 1,
+      title: 'Nouveau',
+      createdAt: new Date(),
+      done: false,
+    };
+
+    this.todoService.add(newTodo);
   }
 }

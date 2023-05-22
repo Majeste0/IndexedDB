@@ -1,18 +1,30 @@
 import { Injectable } from '@angular/core';
-import { environment } from '@environment/environment';
 import { Observable } from 'rxjs';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { TodoType } from '../types/todo-type';
-import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TodoService {
-  constructor(private _httpClient: HttpClient) {}
+  private storeName = 'todos';
 
-  public findAll(): Observable<Array<TodoType>> {
-    const endPoint: string = `${environment.apiRoot}todos`;
+  constructor(private dbService: NgxIndexedDBService) {}
 
-    return this._httpClient.get<TodoType[]>(endPoint);
+  public findAll(): Observable<TodoType[]> {
+    return this.dbService.getAll(this.storeName);
+  }
+  public add(todo: TodoType) {
+    console.log('a');
+    this.dbService
+      .add('todos', {
+        id: `2`,
+        title: `brucez@wayne.com`,
+        createdAt: `2`,
+        done: `true`,
+      })
+      .subscribe((key) => {
+        console.log('key: ', key);
+      });
   }
 }
